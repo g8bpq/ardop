@@ -2,7 +2,6 @@
 //
 
 const char ProductName[] = "ardopc";
-const char ProductVersion[] = "1.0.4.1qBPQ";
 
 // Version k  Fix conflicting definitions of bytDataToSend
 // Version m  Add CM108 PTT (Sept 2021)

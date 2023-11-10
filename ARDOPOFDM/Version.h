@@ -1,6 +1,4 @@
-
-const char ProductName[] = "ARDOP TNC";
-const char ProductVersion[] = "2.0.3.41-BPQ-OFDM";
+const char ProductName[] = "ARDOP OFDM";
 
 // 3.32 Fix tuning range
 // 3.33 Add GUI Support

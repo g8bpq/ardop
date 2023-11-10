@@ -1,0 +1,19 @@
+14:18:31.373 ardopc Version 2.0.3.1
+14:18:31.374 Capture Devices
+14:18:31.649 0 Stereo Mix (Realtek High Defini
+14:18:31.670 1 CABLE-D Output (VB-Audio Cable 
+14:18:31.686 2 CABLE-A Output (VB-Audio Cable 
+14:18:31.707 3 CABLE-C Output (VB-Audio Cable 
+14:18:31.729 4 CABLE-B Output (VB-Audio Cable 
+14:18:31.750 5 CABLE Output (VB-Audio Virtual 
+14:18:31.750 Playback Devices
+14:18:31.781 0 Speakers (Realtek High Definiti
+14:18:31.797 1 CABLE-B Input (VB-Audio Cable B
+14:18:31.812 2 CABLE Input (VB-Audio Virtual C
+14:18:31.830 3 CABLE-A Input (VB-Audio Cable A
+14:18:31.845 4 CABLE-C Input (VB-Audio Cable C
+14:18:31.862 5 CABLE-D Input (VB-Audio Cable D
+14:18:31.878 Opened WaveOut Device Speakers (Realtek High Definiti
+14:18:31.888 Opened WaveIn Device Stereo Mix (Realtek High Defini
+14:18:31.912 ardopc listening on port 8515
+14:18:31.924 Input peaks = -4962, 3991

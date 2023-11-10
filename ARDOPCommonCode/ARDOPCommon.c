@@ -2,6 +2,9 @@
 //	Code Common to all versions of ARDOP. 
 //
 
+const char ProductVersion[] = "2.0.3.1";
+
+
 #ifdef WIN32
 #define _CRT_SECURE_NO_DEPRECATE
 #define _USE_32BIT_TIME_T
@@ -27,8 +30,6 @@
 #include <ctype.h>
 
 #include "ardopcommon.h"
-
-
 #include "getopt.h"
 
 extern int gotGPIO;

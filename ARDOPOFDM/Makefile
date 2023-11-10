@@ -1,14 +1,21 @@
 #	ARDOPC Makefile
 
-OBJS = ofdm.o LinSerial.o KISSModule.o pktARDOP.o pktSession.o BusyDetect.o i2cDisplay.o ALSASound.o ARDOPC.o ardopSampleArrays.o ARQ.o FFT.o FEC.o HostInterface.o Modulate.o rs.o berlekamp.o galois.o SoundInput.o TCPHostInterface.o SCSHostInterface.o
+OBJS = ofdm.o ARDOPCommon.o LinSerial.o KISSModule.o pktARDOP.o pktSession.o BusyDetect.o \
+i2cDisplay.o ALSASound.o ARDOPC.o ardopSampleArrays.o ARQ.o FFT.o FEC.o HostInterface.o \
+Modulate.o rs.o berlekamp.o galois.o SoundInput.o TCPHostInterface.o SCSHostInterface.o
+
+
+
 
 # Configuration:
-CFLAGS = -DLINBPQ -MMD -g 
+CFLAGS = -DLINBPQ -MMD -g -fcommon
 CC = gcc
 
-vpath %.c /mnt/ardopofdm
-vpath %.h /mnt/ardopofdm
+
+vpath %.c ../ARDOPCommonCode
+vpath %.h ../ARDOPCommonCode
 vpath %.o ./
+
 			                       
 all: ardopofdm
 			

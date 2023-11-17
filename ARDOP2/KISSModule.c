@@ -47,10 +47,6 @@ VOID EmCRCStuffAndSend(UCHAR * Msg, int Len);
 VOID ProcessKISSControlFrame();
 VOID ptkSessionBG();
 
-
-
-HANDLE hDevice;
-
 char KISSPORTNAME[80] = "";  // for now just support over Host Interface;
 
 HANDLE hControl;

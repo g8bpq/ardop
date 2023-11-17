@@ -972,7 +972,7 @@ PktLoopBack:		// Reenter here to send rest of variable length packet frame
 
 void AddTrailer()
 {
-	int intAddedSymbols = 1 + TrailerLength / 10; // add 1 symbol + 1 per each 10 ms of MCB.Trailer
+	int intAddedSymbols = 1 + (TrailerLength / 10); // add 1 symbol + 1 per each 10 ms of MCB.Trailer
 	int i, k;
 
 	for (i = 1; i <= intAddedSymbols; i++)

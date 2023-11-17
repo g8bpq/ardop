@@ -2,8 +2,18 @@
 //	Code Common to all versions of ARDOP. 
 //
 
-const char ProductVersion[] = "2.0.3.1";
+const char ProductVersion[] = "2.0.3.2";
 
+//	2.0.3.1 November 2023
+
+//	Determine end of TX time from frame length
+
+
+//	2.0.3.2 November 2023
+
+//	Add Craig KM6LYW's snd_pcm_hw_params_set_period_size_near patch
+//	Set default TrailerLength to 20 (ms)
+//	Add --trailerlength command line parameter
 
 #ifdef WIN32
 #define _CRT_SECURE_NO_DEPRECATE
@@ -60,6 +70,7 @@ extern char PlaybackDevice[80];
 
 int extraDelay = 0;				// Used for long delay paths eg Satellite
 int	intARQDefaultDlyMs = 240;
+int TrailerLength = 20;
 
 int PTTMode = PTTRTS;				// PTT Control Flags.
 
@@ -137,6 +148,7 @@ static struct option long_options[] =
 	{"unkeystring",  required_argument, 0 , 'u'},
 	{"extradelay",  required_argument, 0 , 'e'},
 	{"leaderlength",  required_argument, 0 , 'x'},
+	{"trailerlength",  required_argument, 0 , 't'},
 	{"help",  no_argument, 0 , 'h'},
 	{ NULL , no_argument , NULL , no_argument }
 };
@@ -169,6 +181,7 @@ char HelpScreen[] =
 	"-R use Right Channel of Soundcard for receive in stereo mode\n"
 	"-e val or --extradelay val        Extend no response timeot for use on paths with long delay\n"
 	"--leaderlength val                Sets Leader Length (mS)\n"
+	"--trailerlength val               Sets Trailer Length (mS)\n"
 	"\n"
 	" CAT and RTS PTT can share the same port.\n"
 	" See the ardop documentation for more information on cat and ptt options\n"
@@ -185,7 +198,7 @@ void processargs(int argc, char * argv[])
 	{		
 		int option_index = 0;
 
-		c = getopt_long(argc, argv, "l:c:p:g::k:u:e:hLRyz", long_options, &option_index);
+		c = getopt_long(argc, argv, "l:c:p:g::k:u:e:hLRytz", long_options, &option_index);
 
 		// Check for end of operation or error
 		if (c == -1)
@@ -300,13 +313,16 @@ void processargs(int argc, char * argv[])
 			UseRightTX = 1;
 			break;
 
-
 		case 'e':
 			extraDelay = atoi(optarg);
 			break;
 
 		case 'x':
 			intARQDefaultDlyMs = LeaderLength = atoi(optarg);
+			break;
+
+		case 't':
+			TrailerLength = atoi(optarg);
 			break;
 
 		case '?':

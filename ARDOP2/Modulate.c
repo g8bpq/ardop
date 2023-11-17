@@ -18,6 +18,7 @@ extern short Dummy;
 
 int intSoftClipCnt = 0;
 BOOL SendingHeader200 = 0;		// Set when sending header in 200 Hz Modes
+unsigned int pttOnTime;
 
 void Flush();
 
@@ -687,6 +688,8 @@ void initFilter(int Width, int Centre)
 	DMABuffer = SoundInit();
 
 	KeyPTT(TRUE);
+	pttOnTime = Now;
+
 	SoundIsPlaying = TRUE;
 	StopCapture();
 

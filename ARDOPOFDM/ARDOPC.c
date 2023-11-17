@@ -77,7 +77,6 @@ int LeaderLength = 500;
 #else
 int LeaderLength = 300;
 #endif
-int TrailerLength = 0;
 unsigned int ARQTimeout = 120;
 int TuningRange = 100;
 int TXLevel = 300;				// 300 mV p-p Used on Teensy
@@ -153,8 +152,6 @@ int intOFDMSymbolsDecoded;
 int intQAMQuality;
 int intQAMQualityCnts;
 int intQAMSymbolsDecoded;
-int intGoodQAMSummationDecodes;
-
 
 char stcLastPingstrSender[10];
 char stcLastPingstrTarget[10];
@@ -2429,8 +2426,8 @@ BOOL MainPoll()
 int dttLastBusy;
 int dttLastClear;
 int dttStartRTMeasure;
-int intLastStart;
-int intLastStop;
+extern int intLastStart;
+extern int intLastStop;
 float dblAvgBaselineSlow;
 float dblAvgBaselineFast;
 float dblAvgPk2BaselineRatio;

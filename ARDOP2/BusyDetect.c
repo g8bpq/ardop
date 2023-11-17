@@ -11,7 +11,6 @@
 
 VOID SortSignals2(float * dblMag, int intStartBin, int intStopBin, int intNumBins, float *  dblAVGSignalPerBin, float *  dblAVGBaselinePerBin);
 
-int intLastStart, intLastStop;
 
 int LastBusyOn;
 int LastBusyOff;

@@ -6,8 +6,8 @@ OBJS = LinSerial.o KISSModule.o pktARDOP.o pktSession.o BusyDetect.o i2cDisplay.
 CFLAGS = -DLINBPQ -MMD -g 
 CC = gcc
 
-vpath %.c /mnt/ardop2
-vpath %.h /mnt/ardop2
+vpath %.c ../ARDOPCommonCode
+vpath %.h ../ARDOPCommonCode
 vpath %.o ./
 			                       
 all: ardop2

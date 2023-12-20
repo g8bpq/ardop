@@ -1112,21 +1112,7 @@ int OpenSoundCapture(char * CaptureDevice, int m_sampleRate, char * ErrorMsg)
 		return FALSE;
 	}
 
-//	Debugprintf("Capture using %d channels", m_recchannels);
-
-	int i;
-	short buf[256];
-
-	for (i = 0; i < 10; ++i)
-	{
-		if ((err = snd_pcm_readi (rechandle, buf, 128)) != 128)
-		{
-			Debugprintf("read from audio interface failed (%s)",
-				 snd_strerror (err));
-		}
-	}
-
-//	Debugprintf("Read got %d", err);
+	snd_pcm_start(rechandle);  // without this avail stuck at 0
 
  	return TRUE;
 }
@@ -1649,7 +1635,7 @@ void SoundFlush()
 	// samples sent is is in SampleNo, time started in mS is in pttOnTime.
 	// calculate time to stop
 
-	txlenMs = SampleNo / 12 + 200;		// 12000 samples per sec. 20 mS TXTAIL
+	txlenMs = SampleNo / 12 + 20;		// 12000 samples per sec. 20 mS TXTAIL
 
 	Debugprintf("Tx Time %d Time till end = %d", txlenMs, (pttOnTime + txlenMs) - Now);
 
@@ -1691,8 +1677,6 @@ void SoundFlush()
 	}
 */
 
-	OpenSoundCapture(SavedCaptureDevice, SavedCaptureRate, strFault);	
-
 	// I think we should turn round the link here. I dont see the point in
 	// waiting for MainPoll
 
@@ -1710,6 +1694,7 @@ void SoundFlush()
 
 	KeyPTT(FALSE);		 // Unkey the Transmitter
 
+	OpenSoundCapture(SavedCaptureDevice, SavedCaptureRate, strFault);
 	StartCapture();
 	return;
 }

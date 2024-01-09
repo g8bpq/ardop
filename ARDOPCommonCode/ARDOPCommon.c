@@ -77,6 +77,7 @@ extern char PlaybackDevice[80];
 int extraDelay = 0;				// Used for long delay paths eg Satellite
 int	intARQDefaultDlyMs = 240;
 int TrailerLength = 20;
+BOOL WriteRxWav = FALSE;
 
 int PTTMode = PTTRTS;				// PTT Control Flags.
 
@@ -155,6 +156,7 @@ static struct option long_options[] =
 	{"extradelay",  required_argument, 0 , 'e'},
 	{"leaderlength",  required_argument, 0 , 'x'},
 	{"trailerlength",  required_argument, 0 , 't'},
+	{"writewav",  no_argument, 0, 'w'},
 	{"help",  no_argument, 0 , 'h'},
 	{ NULL , no_argument , NULL , no_argument }
 };
@@ -188,6 +190,7 @@ char HelpScreen[] =
 	"-e val or --extradelay val        Extend no response timeot for use on paths with long delay\n"
 	"--leaderlength val                Sets Leader Length (mS)\n"
 	"--trailerlength val               Sets Trailer Length (mS)\n"
+	"-w or --writewav                  Write WAV files of received audio for debugging.\n"
 	"\n"
 	" CAT and RTS PTT can share the same port.\n"
 	" See the ardop documentation for more information on cat and ptt options\n"
@@ -204,7 +207,7 @@ void processargs(int argc, char * argv[])
 	{		
 		int option_index = 0;
 
-		c = getopt_long(argc, argv, "l:c:p:g::k:u:e:hLRytz", long_options, &option_index);
+		c = getopt_long(argc, argv, "l:c:p:g::k:u:e:hLRytzw", long_options, &option_index);
 
 		// Check for end of operation or error
 		if (c == -1)
@@ -329,6 +332,10 @@ void processargs(int argc, char * argv[])
 
 		case 't':
 			TrailerLength = atoi(optarg);
+			break;
+
+		case 'w':
+			WriteRxWav = TRUE;
 			break;
 
 		case '?':

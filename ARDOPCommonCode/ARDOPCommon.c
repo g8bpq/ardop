@@ -2,7 +2,7 @@
 //	Code Common to all versions of ARDOP. 
 //
 
-const char ProductVersion[] = "2.0.3.2";
+const char ProductVersion[] = "2.0.3.2-pflarue-3";
 
 //	2.0.3.1 November 2023
 
@@ -14,6 +14,12 @@ const char ProductVersion[] = "2.0.3.2";
 //	Add Craig KM6LYW's snd_pcm_hw_params_set_period_size_near patch
 //	Set default TrailerLength to 20 (ms)
 //	Add --trailerlength command line parameter
+
+// 2.0.3.2-pflarue-3  December 2023
+
+// Modify SoundFlush() and OpenSoundCapture() to reduce delay decoding
+// received audio after transmitting.
+
 
 #ifdef WIN32
 #define _CRT_SECURE_NO_DEPRECATE

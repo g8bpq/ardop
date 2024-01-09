@@ -23,6 +23,7 @@
 #define HANDLE int
 
 #include "ardopcommon.h"
+#include "wav.h"
 
 #define SHARECAPTURE		// if defined capture device is opened and closed for each transission
 
@@ -67,6 +68,7 @@ BOOL UseRightRX = TRUE;
 BOOL UseLeftTX = TRUE;
 BOOL UseRightTX = TRUE;
 
+extern BOOL WriteRxWav;
 
 char LogDir[256] = "";
 
@@ -116,6 +118,66 @@ char LogName[3][256] = {"ARDOPDebug", "ARDOPException", "ARDOPSession"};
 #define SESSIONLOG 2
 
 FILE *statslogfile = NULL;
+struct WavFile *rxwf = NULL;
+#define RXWFTAILMS 10000;  // 10 seconds
+unsigned int rxwf_EndNow = 0;
+
+void extendRxwf()
+{
+	rxwf_EndNow = Now + RXWFTAILMS;
+}
+
+void StartRxWav()
+{
+	// Open a new WAV file if not already recording.  
+	// If already recording, then just extend the time before
+	// recording will end.
+	//
+	// Wav files will use a filename that includes port, UTC date, 
+	// and UTC time, similar to log files but with added time to 
+	// the nearest second.  Like Log files, these Wav files will be 
+	// written to the Log directory if defined, else to the current 
+	// directory
+	//
+	// As currently implemented, the wav file written contains only
+	// received audio.  Since nothing is written for the time while 
+	// transmitting, and thus not receiving, this recording is not 
+	// time continuous.  Thus, the filename indicates the time that
+	// the recording was started, but the times of the received 
+	// transmissions, other than the first one, are not indicated.
+	char rxwf_pathname[1024];
+
+	if (rxwf != NULL)
+	{
+		// Already recording, so just extend recording time.
+		extendRxwf();
+		return;
+	}
+	struct tm * tm;
+	time_t T;
+
+	T = time(NULL);
+	tm = gmtime(&T);
+
+	struct timespec tp;
+	int ss, hh, mm;
+	clock_gettime(CLOCK_REALTIME, &tp);
+	ss = tp.tv_sec % 86400;  // Seconds in a day
+	hh = ss / 3600;
+	mm = (ss - (hh * 3600)) / 60;
+	ss = ss % 60;
+
+	if (LogDir[0])
+		sprintf(rxwf_pathname, "%s/ARDOP_rxaudio_%d_%04d%02d%02d_%02d%02d%02d.wav",
+			LogDir, port, tm->tm_year +1900, tm->tm_mon+1, tm->tm_mday,
+			hh, mm, ss);
+	else
+		sprintf(rxwf_pathname, "ARDOP_rxaudio_%d_%04d%02d%02d_%02d:%02d:%02d.wav",
+			port, tm->tm_year +1900, tm->tm_mon+1, tm->tm_mday,
+			hh, mm, ss);
+	rxwf = OpenWavW(rxwf_pathname);
+	extendRxwf();
+}
 
 VOID CloseDebugLog()
 {	
@@ -1403,6 +1465,19 @@ int SoundCardRead(short * input, unsigned int nSamples)
 		}
 	}
 
+	if (rxwf != NULL)
+	{
+		// There is an open Wav file recording.
+		// Either close it or write samples to it.
+		if (rxwf_EndNow < Now)
+		{
+			CloseWav(rxwf);
+			rxwf = NULL;
+		}
+		else
+			WriteWav(samples, ret, rxwf);
+	}
+
 	return ret;
 }
 
@@ -1696,6 +1771,10 @@ void SoundFlush()
 
 	OpenSoundCapture(SavedCaptureDevice, SavedCaptureRate, strFault);
 	StartCapture();
+
+	if (WriteRxWav)
+		// Start recording if not already recording, else to extend the recording time.
+		StartRxWav();
 	return;
 }
 

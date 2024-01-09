@@ -14,6 +14,7 @@ FILE * fp1;
 // Function to generate the Two-tone leader and Frame Sync (used in all frame types) 
 
 extern short Dummy;
+extern int DriveLevel;
 
 int intSoftClipCnt = 0;
 
@@ -1158,6 +1159,8 @@ void SampleSink(short Sample)
 	int intFilLen = intN / 2;
 	int j;
 	float intFilteredSample = 0;			//  Filtered sample
+
+	Sample = Sample * DriveLevel / 100;
 
 	//	We save the previous intN samples
 	//	The samples are held in a cyclic buffer

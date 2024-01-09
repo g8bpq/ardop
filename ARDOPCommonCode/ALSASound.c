@@ -48,6 +48,7 @@ int PackSamplesAndSend(short * input, int nSamples);
 void displayLevel(int max);
 BOOL WriteCOMBlock(HANDLE fd, char * Block, int BytesToWrite);
 VOID processargs(int argc, char * argv[]);
+void Send5SecTwoTone();
 
 int initdisplay();
 
@@ -69,6 +70,7 @@ BOOL UseLeftTX = TRUE;
 BOOL UseRightTX = TRUE;
 
 extern BOOL WriteRxWav;
+extern BOOL TwoToneAndExit;
 
 char LogDir[256] = "";
 
@@ -593,6 +595,14 @@ void main(int argc, char * argv[])
 
 	if (sigaction(SIGPIPE, &act, NULL) < 0) 
 		perror ("SIGPIPE");
+
+	if (TwoToneAndExit)
+	{
+		InitSound();
+		WriteDebugLog(LOGINFO, "Sending a 5 second 2-tone signal. Then exiting ardop.");
+		Send5SecTwoTone();
+		return;
+	}
 
 	ardopmain();
 

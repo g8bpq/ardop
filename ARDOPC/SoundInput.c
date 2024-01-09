@@ -2550,6 +2550,7 @@ void Demod1Car4FSKChar(int Start, UCHAR * Decoded, int Carrier)
 	static UCHAR bytSymHistory[3];
 	int j;
 	UCHAR bytData = 0;
+	char DebugMess[1024];
 
 	int * intToneMagsptr = &intToneMags[Carrier][intToneMagsIndex[Carrier]];
 	   
@@ -2561,7 +2562,7 @@ void Demod1Car4FSKChar(int Start, UCHAR * Decoded, int Carrier)
 	dblSearchFreq = intCenterFreq + (1.5f * intBaud);	// the highest freq (equiv to lowest sent freq because of sideband reversal)
 
 	// Do one symbol
-
+	sprintf(DebugMess, "4FSK_bytSym :");
 	for (j = 0; j < 4; j++)		// for each 4FSK symbol (2 bits) in a byte
 	{
 		dblMagSum = 0;
@@ -2590,6 +2591,7 @@ void Demod1Car4FSKChar(int Start, UCHAR * Decoded, int Carrier)
 		else
 			bytSym = 3;
 
+		sprintf(DebugMess + strlen(DebugMess), " %d(%.0f %03.0f/%03.0f/%03.0f/%03.0f)", bytSym, dblMagSum, 100*dblMag[0]/dblMagSum, 100*dblMag[1]/dblMagSum, 100*dblMag[2]/dblMagSum, 100*dblMag[3]/dblMagSum);
 		bytData = (bytData << 2) + bytSym;
 
 		// !!!!!!! this needs attention !!!!!!!!
@@ -2612,6 +2614,8 @@ void Demod1Car4FSKChar(int Start, UCHAR * Decoded, int Carrier)
 		Start += intSampPerSym; // advance the pointer one symbol
 	}
 
+    // Include these tone values in debug log only if FileLogLevel is LOGDEBUGPLUS
+	WriteDebugLog(LOGDEBUGPLUS, "%s", DebugMess);
 	if (AccumulateStats)
 		intFSKSymbolCnt += 4;
  

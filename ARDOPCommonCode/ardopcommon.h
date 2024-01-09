@@ -111,6 +111,7 @@ typedef int BOOL;
 typedef unsigned char UCHAR;
 
 #define VOID void
+#define HANDLE int
 
 #define FALSE 0
 #define TRUE 1

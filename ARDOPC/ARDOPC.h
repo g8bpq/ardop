@@ -61,6 +61,7 @@ extern unsigned int pttOnTime;
 #define LOGNOTICE 5
 #define LOGINFO 6
 #define LOGDEBUG 7
+#define LOGDEBUGPLUS 8
 
 #include <time.h>
 

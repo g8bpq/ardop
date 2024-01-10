@@ -2088,6 +2088,8 @@ BOOL DemodFrameType4FSK(int intPtr, short * intSamples, int * intToneMags)
 {
 	float dblReal, dblImag;
 	int i;
+	int intMagSum;
+	UCHAR bytSym;
 
 	if ((intFilteredMixedSamplesLength - intPtr) < 2400)
 		return FALSE;
@@ -2105,8 +2107,22 @@ BOOL DemodFrameType4FSK(int intPtr, short * intSamples, int * intToneMags)
 		GoertzelRealImag(intSamples, intPtr, 240, 1425 / 50.0f, &dblReal, &dblImag);
 		intToneMags[3 + 4 * i] = (int)powf(dblReal, 2) + powf(dblImag, 2);
 		intPtr += 240;
+
+		// intMagSum and bytSym are used only to write tone values to debug log.
+		intMagSum = intToneMags[4 * i] + intToneMags[1 + 4 * i] + intToneMags[2 + 4 * i] + intToneMags[3 + 4 * i];
+		if (intToneMags[4 * i] > intToneMags[1 + 4 * i] && intToneMags[4 * i] > intToneMags[2 + 4 * i] && intToneMags[4 * i] > intToneMags[3 + 4 * i])
+			bytSym = 0;
+		else if (intToneMags[1 + 4 * i] > intToneMags[4 * i] && intToneMags[1 + 4 * i] > intToneMags[2 + 4 * i] && intToneMags[1 + 4 * i] > intToneMags[3 + 4 * i])
+			bytSym = 1;
+		else if (intToneMags[2 + 4 * i] > intToneMags[4 * i] && intToneMags[2 + 4 * i] > intToneMags[1 + 4 * i] && intToneMags[2 + 4 * i] > intToneMags[3 + 4 * i])
+			bytSym = 2;
+		else
+			bytSym = 3;
+
+	    // Include these tone values in debug log only if FileLogLevel is LOGDEBUGPLUS
+		WriteDebugLog(LOGDEBUGPLUS, "FrameType_bytSym : %d(%d %03.0f/%03.0f/%03.0f/%03.0f)", bytSym, intMagSum, 100.0*intToneMags[4 * i]/intMagSum, 100.0*intToneMags[1 + 4 * i]/intMagSum, 100.0*intToneMags[2 + 4 * i]/intMagSum, 100.0*intToneMags[3 + 4 * i]/intMagSum);
 	}
-	
+
 	return TRUE;
 }
 

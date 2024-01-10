@@ -228,6 +228,8 @@ Reenter:
 			intDataPtr += 1;
 		}
 		// Include these tone values in debug log only if FileLogLevel is LOGDEBUGPLUS
+		if (intDataBytesPerCar == 0)
+			sprintf(DebugMess + strlen(DebugMess), "(None)");
 		WriteDebugLog(LOGDEBUGPLUS, "%s", DebugMess);
 
 		if (Type == PktFrameHeader)

@@ -225,7 +225,8 @@ VOID WriteDebugLog(int Level, const char * format, ...)
 	if (!DebugLog)
 		return;
 
-	WriteLog(Mess, DEBUGLOG);
+	if (Level <= FileLogLevel)
+		WriteLog(Mess, DEBUGLOG);
 	return;
 }
 

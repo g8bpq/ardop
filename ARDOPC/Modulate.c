@@ -55,6 +55,7 @@ void SendLeaderAndSYNC(UCHAR * bytEncodedBytes, int intLeaderLen)
 	UCHAR bytMask;
 	UCHAR bytSymToSend;
 	short intSample;
+	char DebugMess[256];
 	if (intLeaderLen == 0)
 		intLeaderLenMS = LeaderLength;
 	else
@@ -69,6 +70,7 @@ void SendLeaderAndSYNC(UCHAR * bytEncodedBytes, int intLeaderLen)
 
 	// note revised To accomodate 1 parity symbol per byte (10 symbols total)
 
+	sprintf(DebugMess, "LeaderAndSYNC tones : ");
 	for(j = 0; j < 2; j++)		 // for the 2 bytes of the frame type
 	{              
 		bytMask = 0xc0;
@@ -79,6 +81,7 @@ void SendLeaderAndSYNC(UCHAR * bytEncodedBytes, int intLeaderLen)
 				bytSymToSend = (bytMask & bytEncodedBytes[j]) >> (2 * (3 - k));
 			else
 				bytSymToSend = ComputeTypeParity(bytEncodedBytes[0]);
+			sprintf(DebugMess + strlen(DebugMess), "%d", bytSymToSend);
 
 			for(n = 0; n < 240; n++)
 			{
@@ -92,6 +95,8 @@ void SendLeaderAndSYNC(UCHAR * bytEncodedBytes, int intLeaderLen)
 			bytMask = bytMask >> 2;
 		}
 	}
+	// Include these tone values in debug log only if FileLogLevel is LOGDEBUGPLUS
+	WriteDebugLog(LOGDEBUGPLUS, "%s", DebugMess);
 }
 
 
@@ -109,6 +114,7 @@ void Mod4FSKDataAndPlay(int Type, unsigned char * bytEncodedBytes, int Len, int 
 
     char strType[18] = "";
     char strMod[16] = "";
+    char DebugMess[1024];
 
 	UCHAR bytSymToSend, bytMask, bytMinQualThresh;
 
@@ -185,13 +191,15 @@ Reenter:
 		
 		dblCarScalingFactor = 1.0; //  (scaling factors determined emperically to minimize crest factor) 
 
+		sprintf(DebugMess, "Mod4FSKDataAndPlay 1Car tones :");
 		for (m = 0; m < intDataBytesPerCar; m++)  // For each byte of input data
 		{
 			bytMask = 0xC0;		 // Initialize mask each new data byte
-			
+			sprintf(DebugMess + strlen(DebugMess), " ");
 			for (k = 0; k < 4; k++)		// for 4 symbol values per byte of data
 			{
 				bytSymToSend = (bytMask & bytEncodedBytes[intDataPtr]) >> (2 * (3 - k)); // Values 0-3
+				sprintf(DebugMess + strlen(DebugMess), "%d", bytSymToSend);
 
 				for (n = 0; n < intSampPerSym; n++)	 // Sum for all the samples of a symbols 
 				{
@@ -219,6 +227,10 @@ Reenter:
 			}
 			intDataPtr += 1;
 		}
+		// Include these tone values in debug log only if FileLogLevel is LOGDEBUGPLUS
+		if (intDataBytesPerCar == 0)
+			sprintf(DebugMess + strlen(DebugMess), "(None)");
+		WriteDebugLog(LOGDEBUGPLUS, "%s", DebugMess);
 
 		if (Type == PktFrameHeader)
 		{

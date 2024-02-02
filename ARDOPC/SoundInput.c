@@ -1,5 +1,11 @@
 //	ARDOP Modem Decode Sound Samples
 
+#ifdef WIN32
+#define _CRT_SECURE_NO_DEPRECATE
+#define _USE_32BIT_TIME_T
+#include <windows.h>
+#endif
+
 #include "ARDOPC.h"
 
 #pragma warning(disable : 4244)		// Code does lots of float to int
@@ -27,9 +33,6 @@
 #define PKTLED LED3		// flash when packet received
 extern unsigned int PKTLEDTimer;
 #endif
-
-//#define max(x, y) ((x) > (y) ? (x) : (y))
-//#define min(x, y) ((x) < (y) ? (x) : (y))
 
 void SendFrametoHost(unsigned char *data, unsigned dlen);
 

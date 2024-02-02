@@ -30,7 +30,7 @@ extern BOOL UseKISS;			// Enable Packet (KISS) interface
 int Speed;
 int PollDelay;
 
-SOCKET PktSock;
+extern SOCKET PktSock;
 extern SOCKET PktListenSock;
 
 extern BOOL PKTCONNECTED;
@@ -130,8 +130,6 @@ extern volatile int RXBPtr;
 #define DebugWaitCompletion 4
 #define DebugReadCompletion 8
 */
-
-HANDLE hControl;
 
 typedef struct _SERIAL_STATUS {
     unsigned long Errors;

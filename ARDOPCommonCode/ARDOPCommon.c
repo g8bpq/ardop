@@ -518,7 +518,7 @@ int rawhid_recv(int num, void *buf, int len, int timeout)
 	unsigned char tmpbuf[516];
 	OVERLAPPED ov;
 	DWORD r;
-	int n;
+	long unsigned int n;
 
 	if (sizeof(tmpbuf) < len + 1) return -1;
 	hid = get_hid(num);
@@ -928,7 +928,7 @@ void DecodeCM108(char * ptr)
 	char product[256];
 
 	struct hid_device_info *devs, *cur_dev;
-	const char *path_to_open = NULL;
+	char *path_to_open = NULL;
 	hid_device *handle = NULL;
 
 	if (strlen(ptr) > 16)

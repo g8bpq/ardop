@@ -19,7 +19,7 @@
 #include "ARDOPC.h"
 
 VOID ProcessSCSPacket(UCHAR * rxbuffer, int Length);
-WriteCOMBlock(hDevice, Message, MsgLen);
+BOOL WriteCOMBlock(HANDLE fd, char * Block, int BytesToWrite);
 int ReadCOMBlock(HANDLE fd, char * Block, int MaxLength);
 VOID ProcessKISSBytes(UCHAR * RXBuffer, int Read);
 void KISSTCPPoll();
@@ -217,7 +217,7 @@ int BPQSerialGetData(UCHAR * Message, unsigned int BufLen, unsigned long * MsgLe
 {
 	DWORD dwLength = 0;
 	DWORD Available = 0;
-	int Length, RealLen = 0;
+	long unsigned int Length, RealLen = 0;
 	
 	int ret = PeekNamedPipe(hDevice, NULL, 0, NULL, &Available, NULL);
 
@@ -296,7 +296,7 @@ BOOL SerialHostInit()
 {
 	WSADATA WsaData;			 // receives data from WSAStartup
 	unsigned long OpenCount = 0;
-	unsigned int Errorval;
+	long unsigned int Errorval;
 	char * Baud = strlop(PORTNAME, ',');
 
 	VCOM = TRUE;

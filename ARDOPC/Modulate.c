@@ -1,5 +1,11 @@
 //	Sample Creation routines (encode and filter) for ARDOP Modem
 
+#ifdef WIN32
+#define _CRT_SECURE_NO_DEPRECATE
+#define _USE_32BIT_TIME_T
+#include <windows.h>
+#endif
+
 #include "ARDOPC.h"
 
 

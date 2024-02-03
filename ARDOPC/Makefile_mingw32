@@ -1,0 +1,25 @@
+#	ARDOPC Makefile for mingw32-make.exe from winlibs Intel/AMD 32-bit 
+
+OBJS = ARDOPCommon.o WinSerial.o KISSModule.o pktARDOP.o pktSession.o BusyDetect.o Waveout.o \
+ARDOPC.o ardopSampleArrays.o ARQ.o FFT.o FEC.o HostInterface.o Modulate.o rs.o \
+berlekamp.o galois.o SoundInput.o TCPHostInterface.o SCSHostInterface.o hid.o wav.o
+
+# Configuration:
+CFLAGS = -DLINBPQ -MMD -g 
+CC = gcc
+
+vpath %.c ../ARDOPCommonCode
+vpath %.h ../ARDOPCommonCode
+vpath %.o ./
+			                       
+all: ardopc
+			
+ardopc: $(OBJS)
+	gcc $(OBJS) -Xlinker -Map=output.map -lm -lpthread -lwsock32 -lwinmm -lsetupapi -o ardopc
+
+
+-include *.d
+
+clean :
+	del ardopc $(OBJS)
+

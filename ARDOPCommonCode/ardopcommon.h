@@ -112,7 +112,11 @@ typedef int BOOL;
 typedef unsigned char UCHAR;
 
 #define VOID void
+#ifdef WIN32
+typedef void *HANDLE;
+#else
 #define HANDLE int
+#endif
 
 #define FALSE 0
 #define TRUE 1

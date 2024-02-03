@@ -624,13 +624,6 @@ char * strlop(char * buf, char delim)
 	return ptr;
 }
 
-#ifdef WIN32
-float round(float x)
-{
-	return floorf(x + 0.5f);
-}
-#endif
-
 void GetSemaphore()
 {
 }

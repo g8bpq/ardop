@@ -37,7 +37,6 @@ extern const char ProductVersion[];
 #endif
 
 #ifdef WIN32
-float round(float x);
 typedef void *HANDLE;
 #else
 #define HANDLE int

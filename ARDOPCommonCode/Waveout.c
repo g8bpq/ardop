@@ -15,6 +15,7 @@
 #include <windows.h>
 #include <mmsystem.h>
 
+#include "wav.h"
 
 #ifdef USE_DIREWOLF
 #include "direwolf/fsk_demod_state.h"
@@ -142,6 +143,73 @@ extern int useHamLib;
 
 
 #define TARGET_RESOLUTION 1         // 1-millisecond target resolution
+
+extern BOOL WriteRxWav;
+struct WavFile *rxwf = NULL;
+#define RXWFTAILMS 10000;  // 10 seconds
+unsigned int rxwf_EndNow = 0;
+
+void extendRxwf()
+{
+	rxwf_EndNow = Now + RXWFTAILMS;
+}
+
+void StartRxWav()
+{
+	// Open a new WAV file if not already recording.  
+	// If already recording, then just extend the time before
+	// recording will end.
+	//
+	// Wav files will use a filename that includes port, UTC date, 
+	// and UTC time, similar to log files but with added time to 
+	// the nearest second.  Like Log files, these Wav files will be 
+	// written to the Log directory if defined, else to the current 
+	// directory
+	//
+	// As currently implemented, the wav file written contains only
+	// received audio.  Since nothing is written for the time while 
+	// transmitting, and thus not receiving, this recording is not 
+	// time continuous.  Thus, the filename indicates the time that
+	// the recording was started, but the times of the received 
+	// transmissions, other than the first one, are not indicated.
+	char rxwf_pathname[1024];
+	SYSTEMTIME st;
+
+	if (rxwf != NULL)
+	{
+		// Already recording, so just extend recording time.
+		extendRxwf();
+		return;
+	}
+
+	GetSystemTime(&st);
+
+	if (LogDir[0])
+    {
+        if (HostPort[0])
+            sprintf(rxwf_pathname, "%s/ARDOP_rxaudio_%s_%04d%02d%02d_%02d%02d%02d.wav",
+                LogDir, HostPort, st.wYear, st.wMonth, st.wDay,
+                st.wHour, st.wMinute, st.wSecond);
+        else
+            sprintf(rxwf_pathname, "%s/ARDOP_rxaudio_%04d%02d%02d_%02d%02d%02d.wav",
+                LogDir, st.wYear, st.wMonth, st.wDay,
+                st.wHour, st.wMinute, st.wSecond);
+    }
+	else
+    {
+        if (HostPort[0])
+            sprintf(rxwf_pathname, "ARDOP_rxaudio_%s_%04d%02d%02d_%02d%02d%02d.wav",
+                HostPort, st.wYear, st.wMonth, st.wDay,
+                st.wHour, st.wMinute, st.wSecond);
+        else
+            sprintf(rxwf_pathname, "ARDOP_rxaudio_%04d%02d%02d_%02d%02d%02d.wav",
+                st.wYear, st.wMonth, st.wDay,
+                st.wHour, st.wMinute, st.wSecond);
+	}
+	
+	rxwf = OpenWavW(rxwf_pathname);
+	extendRxwf();
+}
 
 	
 VOID __cdecl Debugprintf(const char * format, ...)
@@ -584,6 +652,19 @@ void PollReceivedSamples()
 			min = max = 0;
 		}
 
+        if (rxwf != NULL)
+        {
+            // There is an open Wav file recording.
+            // Either close it or write samples to it.
+            if (rxwf_EndNow < Now)
+            {
+                CloseWav(rxwf);
+                rxwf = NULL;
+            }
+            else
+                WriteWav(&inbuffer[inIndex][0], inheader[inIndex].dwBytesRecorded/2, rxwf);
+        }
+
 //		WriteDebugLog(LOGDEBUG, "Process %d %d", inIndex, inheader[inIndex].dwBytesRecorded/2);
 		if (Capturing && Loopback == FALSE)
 			ProcessNewSamples(&inbuffer[inIndex][0], inheader[inIndex].dwBytesRecorded/2);
@@ -836,6 +917,9 @@ void SoundFlush()
         //        stcStatus.ControlName = "lblRcvFrame" ' clear the Receive label
         //        queTNCStatus.Enqueue(stcStatus)
           
+	if (WriteRxWav)
+		// Start recording if not already recording, else extend the recording time.
+		StartRxWav();
 
 	return;
 }

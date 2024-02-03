@@ -136,7 +136,7 @@ int LastNow;
 
 extern void Generate50BaudTwoToneLeaderTemplate();
 extern BOOL blnDISCRepeating;
-
+void Send5SecTwoTone();
 
 extern struct sockaddr HamlibAddr;		// Dest for above
 extern int useHamLib;
@@ -145,6 +145,7 @@ extern int useHamLib;
 #define TARGET_RESOLUTION 1         // 1-millisecond target resolution
 
 extern BOOL WriteRxWav;
+extern BOOL TwoToneAndExit;
 struct WavFile *rxwf = NULL;
 #define RXWFTAILMS 10000;  // 10 seconds
 unsigned int rxwf_EndNow = 0;
@@ -413,6 +414,13 @@ void main(int argc, char * argv[])
 	if(!SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS))
 		printf("Failed to set High Priority (%d)\n"), GetLastError();
 
+	if (TwoToneAndExit)
+	{
+		InitSound(TRUE);
+		WriteDebugLog(LOGINFO, "Sending a 5 second 2-tone signal. Then exiting ardop.");
+		Send5SecTwoTone();
+		return;
+	}
 	ardopmain();
 }
 

@@ -79,7 +79,6 @@ int LeaderLength = 500;
 #else
 int LeaderLength = 240;
 #endif
-int TrailerLength = 0;
 unsigned int ARQTimeout = 120;
 int TuningRange = 100;
 int TXLevel = 300;				// 300 mV p-p Used on Teensy
@@ -148,8 +147,6 @@ int intPSKSymbolsDecoded;
 int intQAMQuality;
 int intQAMQualityCnts;
 int intQAMSymbolsDecoded;
-int intGoodQAMSummationDecodes;
-
 
 char stcLastPingstrSender[10];
 char stcLastPingstrTarget[10];
@@ -2332,11 +2329,11 @@ BOOL MainPoll()
 int dttLastBusy;
 int dttLastClear;
 int dttStartRTMeasure;
-int intLastStart;
-int intLastStop;
-float dblAvgBaselineSlow;
-float dblAvgBaselineFast;
-float dblAvgPk2BaselineRatio;
+extern int intLastStart;
+extern int intLastStop;
+extern float dblAvgBaselineSlow;
+extern float dblAvgBaselineFast;
+extern float dblAvgPk2BaselineRatio;
 
 //  Functino to extract bandwidth from ARQBandwidth
 

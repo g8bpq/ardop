@@ -1042,20 +1042,29 @@ int OpenSoundCapture(char * CaptureDevice, int m_sampleRate, char * ErrorMsg)
 	}
 	
 //craiger add frames per period
+
 	fpp = 600;
 	dir = 0;
-//	err = snd_pcm_hw_params_set_period_size_near (rechandle, hw_params, &fpp, &dir);
-// 
-	if ((err = snd_pcm_hw_params_set_access (rechandle, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {
-			Debugprintf("cannot set capture access type (%s)", snd_strerror (err));
+
+	if ((err = snd_pcm_hw_params_set_period_size_near (rechandle, hw_params, &fpp, &dir)) < 0)
+	{
+		Debugprintf("snd_pcm_hw_params_set_period_size_near failed (%s)", snd_strerror (err));
 		return false;
 	}
-	if ((err = snd_pcm_hw_params_set_format (rechandle, hw_params, SND_PCM_FORMAT_S16_LE)) < 0) {
+
+	if ((err = snd_pcm_hw_params_set_access (rechandle, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0)
+	{
+		Debugprintf("cannot set capture access type (%s)", snd_strerror (err));
+		return false;
+	}
+	if ((err = snd_pcm_hw_params_set_format (rechandle, hw_params, SND_PCM_FORMAT_S16_LE)) < 0) 
+	{
 		Debugprintf("cannot set capture sample format (%s)", snd_strerror(err));
 		return false;
 	}
 	
-	if ((err = snd_pcm_hw_params_set_rate (rechandle, hw_params, m_sampleRate, 0)) < 0) {
+	if ((err = snd_pcm_hw_params_set_rate (rechandle, hw_params, m_sampleRate, 0)) < 0)
+	{
 		if (ErrorMsg)
 			sprintf (ErrorMsg, "cannot set capture sample rate (%s)", snd_strerror(err));
 		else
